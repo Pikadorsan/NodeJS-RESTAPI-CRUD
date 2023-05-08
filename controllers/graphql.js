@@ -24,6 +24,7 @@ var schema = buildSchema(`
     type Mutation {
       createBook(input: BookInput): Book
       updateBook(id: ID!, input: BookInput): Book
+      deleteBook(id: ID!): Book
     }
 `);
 
@@ -87,6 +88,24 @@ var root = {
       throw new Error(`Error while updating book with id ${id}: ${err}`);
     }
   },
+
+  deleteBook: async ({ id }) => {
+    try {
+      const book = await BookModel.findByIdAndDelete(id, {
+        new: true,
+      });
+      if (!book) {
+        throw new Error(`Book with id ${id} not found.`);
+      }
+      return {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+      };
+    } catch (err) {
+      throw new Error(`Error while updating book with id ${id}: ${err}`);
+    }
+  },
 };
 
 module.exports = {
@@ -100,4 +119,10 @@ mutation {
     id
   }
 }
+
+mutation {  
+ 
+deleteBook(id : "643d25116f83018784f0066d"){
+id
+}}
 */
